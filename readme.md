@@ -1,3 +1,55 @@
+### 结论
+* swagger2.2 为openapi2版本， 通过swagger-vue进行生成
+* phpdata 为openapi3 版本，通过axios-swagger-helper生成 api及model
+* 以上两个的小程序适配在mpuve-demo项目axios-swaggerVue-webview分支有示例
+* mock工具及ui可使用swagger-api-codegen
+* 项目若要求极低可以使用swagger-request 可适配openapi2, openapi3
+
+
+### axios-swagger-helper  
+  支持openapi3,有model
+  phpdata openapi3 
+    1. model的class名有横杠
+    2. api没有put和post
+
+  grid swagger2.2
+    报错无法使用
+  配合swagger-converter(https://converter.swagger.io/)
+    grid openapi3 需要在json里全局替换《和》，并且api.js 导出class名当前项目为中文需要java端配合修改（不改也能用，就是class命名为中文-_-||）
+
+### swagger-axios-converter
+  生成报错 Running "swagger-vue-codegen:dist" (swagger-vue-codegen) task
+          Fatal error: Cannot read property 'forEach' of undefined
+
+### swagger-vue
+  支持openapi2，无model
+  不支持model可惜了
+  phpdata 不支持openapi3
+  grid openapi2 正常
+
+### swagger2axios
+  基本不支持，无model
+  demo 输出满足需求但无model
+  实际openapi3 格式要求过高，兼容性太差，无法成功
+
+### swagger-api-codegen 
+  支持openapi2, 导出ts
+  优点挺多，有些鸡肋
+  1. 生成的是ts -_-|||
+  2. cli命令
+  3. cli命令swagger json url 启动swagger-ui 查看，不同跑swagger-editor-online
+  4. 生成mock 数据不错
+  5. 只支持openapi2
+
+### agol-swagger-codegen-js+https://developers.arcgis.com/
+  arcgis paas服务，可视化
+
+### swagger-builder
+  测试不通过
+
+### swagger-request
+  openapi2,openapi3 都可用但无任何参数提示，几乎无用
+
 ### Open Api 3.0 Auto Gen Js Axios Client Code
 
 ![](https://img.shields.io/npm/v/axios-swagger-helper?style=flat-square)
