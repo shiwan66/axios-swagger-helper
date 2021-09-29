@@ -13,7 +13,7 @@ module.exports = `
         headers:{
           "Content-Type":"{{contentType}}"
         },
-        cancelToken:cancelSource?.token,
+        cancelToken:cancelSource?cancelSource.token:undefined,
         onUploadProgress:uploadProgress,
         onDownloadProgress:downloadProgress
       }

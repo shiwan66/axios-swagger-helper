@@ -68,8 +68,12 @@ function schemaResolver(docs) {
     let classes = {}
     for (let schemaName in docs.components.schemas) {
         let schema = docs.components.schemas[schemaName]
+        // console.log({
+        //   looooooooooooooooooooooo:schemaName,
+        //   schemaName:schemaName.replace(/\-(\w)/g, (all, letter) => letter.toUpperCase())
+        // })
         classes[schemaName] = render(classT, {
-            className: schemaName,
+            className: schemaName.replace(/\-(\w)/g, (all, letter) => letter.toUpperCase()),
             functions: schemaGen(schema),
         })
     }

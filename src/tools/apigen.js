@@ -43,6 +43,18 @@ function decode(docs) {
         if (json.parameters) {
           for (let key in json.parameters) {
             let parameter = json.parameters[key];
+            if(parameter['$ref']) {
+              let path = parameter['$ref'];
+              let paths = path.split('/').slice(1);
+              let tmpdoc = JSON.parse(JSON.stringify(docs));
+              paths.map(key => {
+                tmpdoc = tmpdoc[key];
+              })
+              parameter = tmpdoc;
+              // console.log('=============')
+              // console.log(parameter)
+              // console.log('=============')
+            }
             let parm = {
               name: parameter.name,
               type: parameter.schema ? jsType[parameter.schema.type] : "",
@@ -78,6 +90,15 @@ function decode(docs) {
         // decode form or body data
         if (json.requestBody) {
           let parameter = json.requestBody.content;
+          if(json.requestBody['$ref']) {
+            let path = json.requestBody['$ref'];
+            let paths = path.split('/').slice(1);
+            let tmpdoc = JSON.parse(JSON.stringify(docs));
+            paths.map(key => {
+              tmpdoc = tmpdoc[key];
+            })
+            parameter = tmpdoc.content;
+          }
           if (!parameter) continue;
           for (let content in parameter) {
             let item = parameter[content];
@@ -109,9 +130,12 @@ function decode(docs) {
                 typeName = parameter.type
               // 如果不包含参数名称，则默认传输整个body
               if (typeName) {
+                // console.log('-----------')
+                // console.log(parameter, typeName)
+                // console.log('----------------')
                 let parm = {
-                  name: parameter.name ? parameter.name : typeName.toLowerCase(),
-                  type: parameter.$ref ? `UserModel.${typeName}` : typeName,
+                  name: parameter.name ? parameter.name : typeName.replace(/\-(\w)/g, (all, letter) => letter.toUpperCase()),
+                  type: parameter.$ref ? `UserModel.${typeName.replace(/\-(\w)/g, (all, letter) => letter.toUpperCase())}` : typeName.replace(/\-(\w)/g, (all, letter) => letter.toUpperCase()),
                   summary: parameter.description
                     ? parameter.description
                     : "",
@@ -175,9 +199,19 @@ function gen(apis, index) {
       let action = controller[methodName];
       // 构造Action请求的注释
       let comment = [];
-      comment.push("  * @summary " + (action.summary ? action.summary : ""));
+      comment.push("  * @summary " + (action.summary ? action.summary : ""));      
       for (let index in action.parameters) {
-        let item = action.parameters[index];
+        let item = action.parameters[index];        
+        // if(item['$ref']) {
+        //   let path = item['$ref'];
+        //   let paths = path.split('/').slice(1);
+        //   let tmpdoc = JSON.parse(JSON.stringify(docs));
+        //   paths.map(key => {
+        //     tmpdoc = tmpdoc[key];
+        //   })
+        //   item = tmpdoc;
+        // }
+        // console.log(item)
         comment.push(
           "  * @param {" +
           item.type +
@@ -234,11 +268,22 @@ function gen(apis, index) {
         }
         queryName.push((action.query[index].name).split(".").slice()[0].toLowerCase().toLowerCase());
       }
+      // console.log({
+      //   comment,
+      //   methodName,
+      //   paramsName: paramsName.replace(/\-(\w)/g, (all, letter) => letter.toUpperCase()),
+      //   dataName: dataName.replace(/\-(\w)/g, (all, letter) => letter.toUpperCase()),
+      //   queryName,
+      //   url: action.path,
+      //   method: action.method,
+      //   contentType: action.contentType,
+      //   responseType: action.responseType,
+      // })
       let apiT = render(actionT, {
         comment,
         methodName,
-        paramsName,
-        dataName,
+        paramsName: paramsName.replace(/\-(\w)/g, (all, letter) => letter.toUpperCase()),
+        dataName: dataName.replace(/\-(\w)/g, (all, letter) => letter.toUpperCase()),
         queryName,
         url: action.path,
         method: action.method,
