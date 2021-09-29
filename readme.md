@@ -7,6 +7,7 @@
 
 
 ### axios-swagger-helper  
+```
   支持openapi3,有model
   phpdata openapi3 
     1. model的class名有横杠
@@ -16,23 +17,26 @@
     报错无法使用
   配合swagger-converter(https://converter.swagger.io/)
     grid openapi3 需要在json里全局替换《和》，并且api.js 导出class名当前项目为中文需要java端配合修改（不改也能用，就是class命名为中文-_-||）
-
+```
 ### swagger-axios-converter
   生成报错 Running "swagger-vue-codegen:dist" (swagger-vue-codegen) task
           Fatal error: Cannot read property 'forEach' of undefined
 
 ### swagger-vue
+```
   支持openapi2，无model
   不支持model可惜了
   phpdata 不支持openapi3
   grid openapi2 正常
-
+```
 ### swagger2axios
+```
   基本不支持，无model
   demo 输出满足需求但无model
   实际openapi3 格式要求过高，兼容性太差，无法成功
-
+```
 ### swagger-api-codegen 
+```
   支持openapi2, 导出ts
   优点挺多，有些鸡肋
   1. 生成的是ts -_-|||
@@ -40,7 +44,7 @@
   3. cli命令swagger json url 启动swagger-ui 查看，不同跑swagger-editor-online
   4. 生成mock 数据不错
   5. 只支持openapi2
-
+```
 ### agol-swagger-codegen-js+https://developers.arcgis.com/
   arcgis paas服务，可视化
 
