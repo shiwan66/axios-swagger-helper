@@ -167,6 +167,13 @@ function decode(docs) {
               } else {
                 api["responseType"] = "json";
               }
+              try {
+                // loger.info(json.responses[200].content[key].schema.$ref)
+                if(json.responses[200].content[key].schema.$ref) {
+                  let pathList = json.responses[200].content[key].schema.$ref.split('/');
+                  api["returns"] = pathList[pathList.length-1]
+                }
+              } catch(ex) {}
               break;
             }
           else {
@@ -216,7 +223,7 @@ function gen(apis, index) {
           "  * @param {" +
           item.type +
           "} [" +
-          item.name.toLowerCase() +
+          item.name +
           "] " +
           item.summary
         );
@@ -225,6 +232,7 @@ function gen(apis, index) {
       comment.push(`  * @param {CancelTokenSource} [cancelSource] Axios Cancel Source 对象，可以取消该请求`)
       comment.push(`  * @param {Function} [uploadProgress] 上传回调函数`)
       comment.push(`  * @param {Function} [downloadProgress] 下载回调函数`)
+      if(action.returns) comment.push(`  * @returns {Promise<UserModel.${action.returns}>}`)
       comment = comment.join("\n");
       // 构造参数名
       let paramsName = [];
@@ -234,7 +242,8 @@ function gen(apis, index) {
           let tempPara = (action.parameters[index].name).split('.').slice()[0].toLowerCase();
           if (paramsName.indexOf(tempPara) != -1) continue;
         }
-        paramsName.push((action.parameters[index].name).split('.').slice()[0].toLowerCase());
+        // shiwan66 这里修改params参数大小写
+        paramsName.push((action.parameters[index].name).split('.').slice()[0]);
       }
       paramsName = paramsName.join(",");
       if (paramsName.length > 0) { // 判断是否有参数，如果有参数则后面再补一个,号
@@ -247,7 +256,7 @@ function gen(apis, index) {
             let tempPara = (action.data[index].name).split('.').slice()[0].toLowerCase();
             if (dataName.indexOf(tempPara) != -1) continue;
           }
-          dataName.push((action.data[index].name).split(".").slice()[0].toLowerCase().toLowerCase());
+          dataName.push((action.data[index].name).split(".").slice()[0]);
         }
         dataName = dataName.join(",");
         if (action.contentType != contentType.application.json) {
@@ -266,8 +275,10 @@ function gen(apis, index) {
           let tempPara = (action.query[index].name).split('.').slice()[0].toLowerCase();
           if (queryName.indexOf(tempPara) != -1) continue;
         }
-        queryName.push((action.query[index].name).split(".").slice()[0].toLowerCase().toLowerCase());
+        // shiwan66 这里修改query参数大小写
+        queryName.push((action.query[index].name).split(".").slice()[0]);
       }
+      // shiwan66 这里打印可以看每个api调用参数信息
       // console.log({
       //   comment,
       //   methodName,
@@ -290,6 +301,8 @@ function gen(apis, index) {
         contentType: action.contentType,
         responseType: action.responseType,
       });
+      // shiwan66 这里替换class大小写
+      className = className.slice(0,1).toUpperCase()+className.slice(1).replace(/\-(\w)/g, (all, letter) => letter.toUpperCase());
       // url property
       functionProperties.push(render(`/**
 * @description {{methodName}} url链接，包含baseURL

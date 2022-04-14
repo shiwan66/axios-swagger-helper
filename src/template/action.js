@@ -4,7 +4,7 @@ module.exports = `
   */
   static async {{methodName}}({{paramsName}}cancelSource,uploadProgress,downloadProgress){
     return await new Promise((resolve,reject)=>{
-      let responseType = "{{responseType}}";
+      let responseType = "json";
       let options = {
         method:'{{method}}',
         url:'{{url}}',

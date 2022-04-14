@@ -12,9 +12,11 @@ const propertyT = `
     {{name}}={{value}}`;
 
 const defaultValue = {
-    string: `undefined`,
-    array: `undefined`,
-    integer: `undefined`
+    string: `''`,
+    array: `[]`,
+    integer: `undefined`,
+    boolean: `false`,
+    object: `{}`
 }
 
 const paramsT = `     * @param {{{type}}} {{name}} {{summary}}`
@@ -27,16 +29,35 @@ function schemaGen(schema) {
     let params = []
     if (schema.type && schema.type == "object") {
         for (let propertyName in schema.properties) {
-            constructFunc.push(`${propertyName} = undefined`)
+            let hasDefault = schema.properties[propertyName];
+            constructFunc.push(`${propertyName} = ${hasDefault?defaultValue[schema.properties[propertyName].type]:'undefualt'}`)
             assigns.push(`this.${propertyName} = ${propertyName}`)
             let property = schema.properties[propertyName]
+            //console.log(property)
             if (property.type) {
+                let type = jsType[property.type]
+                try {
+                    if(property.type == 'array') {
+                        let pathList = property.items.$ref.split('/');
+                        type = `${type}<${pathList[pathList.length-1]}>`
+                    }
+                } catch(ex) {}
                 let obj = {
-                    type: jsType[property.type],
+                    type: type,
                     summary: property.description == null ? "" : property.description,
                     name: propertyName,
                     value: defaultValue[property.type]
                 }
+                // if(propertyName.toLowerCase() == 'staffid') {
+                //     console.log('jsType')
+                //     console.log(jsType)
+                //     console.log('property')
+                //     console.log(property)
+                //     console.log('propertyName')
+                //     console.log(propertyName)
+                //     console.log('defaultValue')
+                //     console.log(defaultValue)
+                // }
                 props += render(propertyT, obj)
                 params.push(render(paramsT, obj))
             } else if (property.$ref) {
