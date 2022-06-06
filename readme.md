@@ -4,6 +4,7 @@
 * 以上两个的小程序适配在mpuve-demo项目axios-swaggerVue-webview分支有示例
 * mock工具及ui可使用swagger-api-codegen
 * 项目若要求极低可以使用swagger-request 可适配openapi2, openapi3
+* https://sample.hntyhb.com.cn/https/?url=http://39.100.123.215:8191/tf/main/v2/api-docs http转https资源
 
 
 ### axios-swagger-helper  
@@ -11,12 +12,20 @@
   支持openapi3,有model
   phpdata openapi3 
     1. model的class名有横杠
-    2. api没有put和post
 
   grid swagger2.2
-    报错无法使用
-  配合swagger-converter(https://converter.swagger.io/)
-    grid openapi3 需要在json里全局替换《和》，并且api.js 导出class名当前项目为中文需要java端配合修改（不改也能用，就是class命名为中文-_-||）
+    报错无法使用,（wind openapi3 需要在json里全局替换«和»为空，并且api.js 导出class名当前项目为中文需要java端配合修改（不改也能用，就是class命名为中文-_-||））
+    复制http://39.100.123.215:8191/tf/main/v2/api-docs到https://editor.swagger.io
+    配合(https://editor.swagger.io/) Edit/Convert to OpenAPI 3, 然后File另存json下载
+    wind.json 正则替换
+      [«»] -> 
+    wind.json启动http服务
+      http://localhost:3000/wind.json
+    执行
+      npm run dev get http://localhost:3000/wind.json -d ./windv3
+    api.js正则替换
+      ([a-z])-([a-z])(.*[=,{]) -> $1$2$3
+      responseType = "blob" -> responseType = "json"
 ```
 ### swagger-axios-converter
   生成报错 Running "swagger-vue-codegen:dist" (swagger-vue-codegen) task
