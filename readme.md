@@ -23,9 +23,17 @@
       http://localhost:3000/wind.json
     执行
       npm run dev get http://localhost:3000/wind.json -d ./windv3
-    api.js正则替换
+    api.js正则替换(2022.06.06测试已非必要)
       ([a-z])-([a-z])(.*[=,{]) -> $1$2$3
       responseType = "blob" -> responseType = "json"
+  
+  update 2022.06.06
+  swagger v2:
+    修改src/indexv2.js的swagger地址
+    运行npm run dev
+  swagger v3:
+    修改src/indexv3.js的swagger地址
+    运行npm run v3
 ```
 ### swagger-axios-converter
   生成报错 Running "swagger-vue-codegen:dist" (swagger-vue-codegen) task

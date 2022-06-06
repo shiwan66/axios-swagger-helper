@@ -8,7 +8,8 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "dev": "node ./src/index.js",
+    "dev": "node ./src/indexv2.js",
+    "v3": "node ./src/indexv3.js",
     "clean": "rm ./api.js",
     "babel": "babel-node"
   },
